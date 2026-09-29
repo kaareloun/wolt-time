@@ -4,5 +4,5 @@ Shows original vs live delivery estimate + drift in Wolt's "Being delivered" vie
 
 ## Install locally
 
-1. `git clone <repo-url>`
+1. `git clone git@github.com:kaareloun/wolt-time.git`
 2. Open `chrome://extensions` → enable Developer mode → Load unpacked → select this folder.
