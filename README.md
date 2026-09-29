@@ -2,6 +2,8 @@
 
 Shows original vs live delivery estimate + drift in Wolt's "Being delivered" view.
 
+![screenshot](screenshot.png)
+
 ## Install locally
 
 1. `git clone git@github.com:kaareloun/wolt-time.git`
