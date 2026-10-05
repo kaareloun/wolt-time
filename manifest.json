@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Wolt Time — original vs live delivery estimate",
-  "version": "0.2.0",
-  "description": "In Wolt's Being delivered view, shows the original minutes-until-delivery vs the live countdown, with drift.",
+  "version": "0.3.0",
+  "description": "In Wolt's Being delivered view, shows the original minutes-until-delivery vs the live countdown, with drift. In the order receipt, shows who owes what and copies it for Splitwise.",
   "permissions": ["storage"],
   "host_permissions": ["https://wolt.com/*"],
   "content_scripts": [

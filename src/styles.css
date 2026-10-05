@@ -50,3 +50,116 @@
   background: #35c759;
   box-shadow: 0 0 0 3px rgba(53, 199, 89, 0.2);
 }
+
+#wolt-time-split {
+  margin: 12px 0;
+  padding: 12px 14px;
+  box-sizing: border-box;
+  border: 1px solid rgba(0, 194, 232, 0.35);
+  border-radius: 12px;
+  background: rgba(0, 194, 232, 0.07);
+  font-family: inherit;
+  color: var(--cb-color-text, inherit);
+}
+
+#wolt-time-split .wt-split-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+#wolt-time-split .wt-split-actions {
+  display: flex;
+  gap: 6px;
+}
+
+#wolt-time-split .wt-split-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #007a99;
+}
+
+#wolt-time-split .wt-split-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#wolt-time-split .wt-split-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+#wolt-time-split .wt-split-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#wolt-time-split .wt-split-amount {
+  flex: none;
+  font-weight: 700;
+}
+
+#wolt-time-split .wt-split-btn,
+#wolt-time-split .wt-split-copy-amount {
+  flex: none;
+  appearance: none;
+  padding: 5px 9px;
+  border: 1px solid rgba(0, 194, 232, 0.5);
+  border-radius: 999px;
+  background: #fff;
+  color: #007a99;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#wolt-time-split .wt-split-copy-amount {
+  min-width: 46px;
+}
+
+#wolt-time-split .wt-split-btn:hover,
+#wolt-time-split .wt-split-copy-amount:hover {
+  background: #00c2e8;
+  color: #fff;
+}
+
+#wolt-time-split .wt-split-btn:active,
+#wolt-time-split .wt-split-copy-amount:active {
+  transform: scale(0.95);
+}
+
+#wolt-time-split .wt-split-btn:focus-visible,
+#wolt-time-split .wt-split-copy-amount:focus-visible {
+  outline: 2px solid #00617a;
+  outline-offset: 2px;
+}
+
+#wolt-time-split .wt-split-host {
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #007a99;
+}
+
+#wolt-time-split .wt-split-summary {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 194, 232, 0.25);
+  font-size: 11px;
+  color: #3f6b75;
+}
