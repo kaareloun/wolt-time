@@ -68,6 +68,11 @@ const refresh = async () => {
     else if (d > 12 * 60) d -= 24 * 60;
     return d;
   };
+  // clockOf: delivered timestamp as "HH:MM" so it can be diffed against an ETA clock
+  const clockOf = (ts) => {
+    const d = new Date(ts);
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  };
   const hist = Array.isArray(record.history) ? record.history : [];
   if (!hist.length) {
     histWrap.hidden = true;
@@ -77,7 +82,8 @@ const refresh = async () => {
     histTitle.textContent = `Estimate history (${hist.length})`;
     histEl.innerHTML = "";
     const implied = (h) => h.m + (h.t - record.firstSeenAt) / 60000;
-    const baselineEta = hist.find((h) => parseEtaMinutes(h.eta) != null)?.eta || null;
+    // Measure from the very first estimate: only use an ETA clock if the FIRST row has one
+    const baselineEta = parseEtaMinutes(hist[0]?.eta) != null ? hist[0].eta : null;
     for (let i = 0; i < hist.length; i++) {
       const h = hist[i];
       const row = document.createElement("div");
@@ -105,7 +111,12 @@ const refresh = async () => {
       dot.style.background = "#35c759";
       row.appendChild(dot);
       const txt = document.createElement("span");
-      txt.textContent = `${new Date(record.deliveredAt).toLocaleTimeString()} · delivered`;
+      let ddelta = "";
+      let dd = baselineEta ? etaTotalDelta(baselineEta, clockOf(record.deliveredAt)) : null;
+      if (dd == null && Number.isFinite(hist[0]?.m))
+        dd = Math.round((record.deliveredAt - hist[0].t) / 60000 - hist[0].m);
+      if (dd != null) ddelta = dd > 0 ? ` (+${dd})` : ` (${dd})`;
+      txt.textContent = `${new Date(record.deliveredAt).toLocaleTimeString()} · delivered${ddelta}`;
       row.appendChild(txt);
       histEl.appendChild(row);
     }

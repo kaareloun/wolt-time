@@ -195,6 +195,11 @@
     else if (d > 12 * 60) d -= 24 * 60;
     return d;
   };
+  // clockOf: delivered timestamp as "HH:MM" so it can be diffed against an ETA clock
+  const clockOf = (ts) => {
+    const d = new Date(ts);
+    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  };
   // Fallback when ETA clock is missing/unparseable: implied total
   // (minutes-left + elapsed) vs first row, rounded.
   const impliedOf = (record, h) => h.m + (h.t - record.firstSeenAt) / 60000;
@@ -232,17 +237,28 @@
     wrap.appendChild(title);
     const list = document.createElement("div");
     list.className = "wt-hist-list";
-    // Collapse legacy consecutive same-ETA duplicates (new rows are ETA-gated already)
+    // Drop consecutive rows that repeat the same ETA clock
     const shown = hist.filter((h, i) => i === 0 || !h.eta || h.eta !== hist[i - 1].eta);
-    const baselineEta = shown.find((h) => parseEtaMinutes(h.eta) != null)?.eta || null;
+    // BASELINE: measure everything from the very first estimate. Only use an ETA clock
+    // when the FIRST row has one; otherwise the countdown is the baseline (picking a
+    // later row's ETA would make deltas look like "diff from prev").
+    const baselineEta = parseEtaMinutes(shown[0]?.eta) != null ? shown[0].eta : null;
     if (delivered) {
+      const deliveredTs = record.deliveredAt || Date.now();
+      // delivered row: final drift, same basis as the list — ETA clock if the start had
+      // one, else actual time from the first row minus the first countdown
+      let dd = baselineEta ? etaTotalDelta(baselineEta, clockOf(deliveredTs)) : null;
+      if (dd == null && shown[0] && Number.isFinite(shown[0].m))
+        dd = Math.round((deliveredTs - shown[0].t) / 60000 - shown[0].m);
+      let delta = "";
+      if (dd != null) delta = dd > 0 ? ` (+${dd})` : ` (${dd})`;
       const row = document.createElement("div");
       row.className = "wt-hist-row wt-hist-done";
       const dot = document.createElement("span");
       dot.className = "wt-hist-dot";
       row.appendChild(dot);
       const txt = document.createElement("span");
-      txt.textContent = `${new Date(record.deliveredAt || Date.now()).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · delivered`;
+      txt.textContent = `${new Date(deliveredTs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · delivered${delta}`;
       row.appendChild(txt);
       list.appendChild(row);
     }
@@ -256,7 +272,7 @@
       const txt = document.createElement("span");
       const time = new Date(h.t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       let delta = "";
-      // Total from start: baseline is the first row with a parseable ETA clock.
+      // Total from start, measured against the first row's estimate
       const d = totalDelta(record, shown[0], baselineEta, h);
       if (d != null && d !== 0) delta = d > 0 ? ` (+${d})` : ` (${d})`;
       txt.textContent = `${time} · ${h.m} min left${h.eta ? ` · ETA ${h.eta}` : ""}${delta}`;
